@@ -13,7 +13,7 @@ Each row maps a slide (by its exact title) to what to show from this repo. Claud
 | The harness is the real guarantee | Shared suite on both targets, contract tests, e2e, axe, `pnpm trace` | | 2, 6 |
 | Two cadences, one architecture: shell and slot | Host page (shell) + `<kyc-onboarding>` (slot); the loader | | 4 |
 | A2UI: agents declare UI as data | The live `/api/agent/blueprint` response (headers + JSONL) next to the rendered form; `packages/agent/src/encode-a2ui.ts` | | 3 |
-| Three protocols, three jobs | Where A2UI is used, and whether AG-UI is used (record the Phase 0 decision) | | 0, 3 |
+| Three protocols, three jobs | Where A2UI is used, and whether AG-UI is used (the Checkpoint 0 decision) | `docs/VERSIONS.md` (A2UI v0.9 and AG-UI sections) | 0, 3 |
 | Zero-trust UI: data, not code | Per-request schema (enums of catalog + policy fields), catalog allowlist, RT-004 policy check, RT-007 (no user data to the agent), lint rule | | 3 |
 | Why compile-time? | Lite bundle size vs full (numbers from `pnpm size`) | | 5 |
 | Intermediate representation: Mitosis | `DateField.lite.tsx` | | 2 |

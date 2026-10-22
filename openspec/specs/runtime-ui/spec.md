@@ -78,6 +78,8 @@ The browser SHALL treat every blueprint as untrusted, even though the server bui
 - **AND** the codebase contains no `eval`, `new Function`, `dangerouslySetInnerHTML` or `{@html}`, which lint enforces
 
 ### Requirement: Build-time compilation of the primitives
+Each primitive SHALL be written once in `packages/ir`, and `pnpm ir:build` MUST compile it to both a React and a Svelte component.
+
 #### Scenario: IR-001 written once, compiled twice
 - **WHEN** `pnpm ir:build` runs
 - **THEN** each primitive in `packages/ir` produces a React and a Svelte component in `packages/gen`, each with a GENERATED header
@@ -88,6 +90,8 @@ The browser SHALL treat every blueprint as untrusted, even though the server bui
 - **THEN** the same primitive behaviour tests pass against both the React and the Svelte output
 
 ### Requirement: Traceability
+Every scenario up to the current milestone SHALL have a tagged test, and `pnpm trace` MUST fail when one is missing.
+
 #### Scenario: TRC-001 every scenario in the current milestone has a test
 - **WHEN** `pnpm trace` runs with `TRACE_MILESTONE` (default: the highest milestone marked done in `openspec/milestones.md`)
 - **THEN** it fails if any scenario ID in that milestone or an earlier one has no tagged test, or if any test tag references an unknown ID

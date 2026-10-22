@@ -26,7 +26,7 @@ Otherwise it SHALL choose full.
 - **AND** for geo GB under the same conditions, the full version is loaded
 
 ### Requirement: Size and speed budgets (initial targets)
-These are initial targets. If one is not achievable, report the measured value instead of silently changing it.
+These SHALL be treated as initial targets only; if one is not achievable, the measured value MUST be reported instead of silently changed.
 
 #### Scenario: LITE-002 bundle budget
 - **WHEN** `pnpm size` runs

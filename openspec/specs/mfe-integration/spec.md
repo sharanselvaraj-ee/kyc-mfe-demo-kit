@@ -40,6 +40,8 @@ The element SHALL dispatch these DOM `CustomEvent`s, all bubbling and composed:
 - **THEN** the element discards in-memory state, fetches flags for the new geo, and re-renders
 
 ### Requirement: Style isolation and theming
+The element SHALL render inside a shadow root and MUST expose theming only through documented CSS custom properties, isolated from host page styles.
+
 #### Scenario: MFE-004 shadow DOM with token theming
 - **WHEN** the host sets `--kyc-color-primary` on the element
 - **THEN** the form's primary colour changes
