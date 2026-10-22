@@ -40,15 +40,16 @@ AG-UI (github.com/ag-ui-protocol/ag-ui, docs.ag-ui.com) is a session/transport p
 ## OpenSpec
 
 - **Package:** `@fission-ai/openspec` (not `openspec` or `@openspec/cli`). Current version `1.14.3`. Repo: https://github.com/Fission-AI/OpenSpec. Invoked via `npx -y @fission-ai/openspec@1.14.3 <cmd>` — no global install, no `openspec.json` needed; it resolves the root from the existing `openspec/` directory layout.
-- **`openspec validate --all --strict` result (before fixes):** 5 specs checked, 0 passed strict, 2 passed / 3 failed without `--strict` (warnings alone don't fail non-strict). **After the formatting fixes below:** 3 passed / 2 failed strict — the only remaining failures are the two pre-existing ">500 characters" warnings left for human review.
+- **`openspec validate --all --strict` result (before fixes):** 5 specs checked, 0 passed strict, 2 passed / 3 failed without `--strict` (warnings alone don't fail non-strict). **After the formatting fixes below plus the 2026-10-22 follow-up (next section):** 5 passed / 0 failed strict.
 - **Formatting fixes applied** (RFC-2119 wording only — added one `SHALL`/`MUST` sentence per flagged requirement heading, no behaviour change, scenarios untouched):
   - `kyc-onboarding`: Name, Date of birth, National ID, Address, Document upload, OTP, Government prefill, Residency permit expiry, Accessibility (9 requirements)
   - `mfe-integration`: Style isolation and theming
   - `runtime-ui`: Build-time compilation of the primitives, Traceability
   - `lite-mobile`: Size and speed budgets (reworded existing sentence to include SHALL/MUST)
-- **Left for human review (not formatting, structural):**
-  - `feature-flags` requirement "Features response contract": flagged ">500 characters", suggests splitting examples/edge-cases into scenarios or separate requirements.
-  - `mfe-integration` requirement "Element contract": same ">500 characters" flag (it also carries the attribute table and event table — splitting might hurt readability more than it helps; a human call).
+- **">500 characters" warnings — resolved 2026-10-22.** The validator measures each requirement's body text (everything between its `### Requirement:` heading and its first scenario, skipping fenced code blocks but *not* skipping markdown tables). Checking the installed CLI's own parser (`extractRequirementBody` / `MAX_REQUIREMENT_TEXT_LENGTH = 500` in `requirement-text.js` / `constants.js`) showed the actual culprits were the two array-indexed requirements I'd initially misread by title:
+  - `feature-flags` → **"Geography version matrix (v1)"** (not "Features response contract" — my first pass misidentified this): the 10-row flag matrix table lived directly in the requirement body. Fix: moved the table into scenario `FLG-005`'s `**GIVEN**` block — it's reference data the scenario already relies on, not requirement prose.
+  - `mfe-integration` → **"Element contract"**: bundled an attribute list and an event table under one heading. Fix: merged the attribute list into the adjacent `Loader` requirement (whose scenario `MFE-001` already exercises `geo`/`locale`/`api-base`), and split "Element events" into its own requirement, keeping its existing scenarios `MFE-002`/`MFE-003`.
+  - No scenario IDs, SHALL/MUST text, or behavior changed — only where existing content lives. `openspec validate --specs --strict` now passes 5/5.
 
 ## MSW
 
@@ -61,4 +62,4 @@ AG-UI (github.com/ag-ui-protocol/ag-ui, docs.ag-ui.com) is a session/transport p
 No global `pnpm`/`corepack` is installed or assumed. All commands in this repo run through `npx pnpm@12.14.0 <cmd>` (and other CLIs — `openspec`, `mitosis` — the same way, pinned per-call), so nothing is installed outside the repo's own dependency resolution unless genuinely unavoidable. `package.json` (once created in Checkpoint 1) pins `"packageManager": "pnpm@12.14.0"` so `corepack`, when present, resolves to the same version.
 
 ## Open questions (also logged in `docs/OPEN-QUESTIONS.md`)
-- `feature-flags` and `mfe-integration` have two requirements flagged ">500 characters" by `openspec validate --strict` — structural, left for human review (see OpenSpec section above).
+- None outstanding from Checkpoint 0 as of 2026-10-22 — the ">500 characters" warnings are resolved (see OpenSpec section above).

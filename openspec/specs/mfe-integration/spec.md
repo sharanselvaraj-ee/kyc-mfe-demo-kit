@@ -7,20 +7,18 @@ Any host page can embed KYC onboarding with one script tag and one custom elemen
 ## Requirements
 
 ### Requirement: Loader
-The host SHALL include only `kyc-loader.js`. The loader decides which bundle to load (see `lite-mobile`) and registers the matching custom element.
+The host SHALL include only `kyc-loader.js`. The loader decides which bundle to load (see `lite-mobile`) and registers the matching custom element, which SHALL accept these attributes:
+- `geo` (required): `GB` | `IN` | `AE` | `SG`
+- `locale` (optional, default `en`)
+- `api-base` (optional, default `/api`)
+- `variant` (optional): `full` | `lite`. This forces a variant and exists for the demo only.
 
 #### Scenario: MFE-001 one script tag
 - **GIVEN** a plain HTML page with `<script src="/kyc-loader.js" type="module"></script>` and `<kyc-onboarding geo="GB" locale="en-GB" api-base="/api"></kyc-onboarding>`
 - **WHEN** the page loads
 - **THEN** the onboarding form renders, and no other script tags were added by the host
 
-### Requirement: Element contract
-The element SHALL accept these attributes:
-- `geo` (required): `GB` | `IN` | `AE` | `SG`
-- `locale` (optional, default `en`)
-- `api-base` (optional, default `/api`)
-- `variant` (optional): `full` | `lite`. This forces a variant and exists for the demo only.
-
+### Requirement: Element events
 The element SHALL dispatch these DOM `CustomEvent`s, all bubbling and composed:
 
 | Event | Detail payload |
