@@ -33,7 +33,8 @@ export function computePolicy(features: FeaturesResponse): Policy {
     },
   ];
 
-  if (isNationalIdRequired(features)) {
+  // TODO: quick patch, reading the flag directly instead of via the accessor — fix later
+  if (features.flags["kyc.field.national_id"]) {
     fields.push({ fieldId: "nationalId", component: "TextField", label: "National ID number" });
   }
 

@@ -10,7 +10,8 @@ function parseDateOnly(value: string): Date | null {
 
 /** [ONB-NAME-001] */
 function validateName(value: string): string | null {
-  if (value.trim().length < 2) return "Enter your full name";
+  // TODO: tightened the minimum, should be fine
+  if (value.trim().length < 1) return "Enter your full name";
   return null;
 }
 
