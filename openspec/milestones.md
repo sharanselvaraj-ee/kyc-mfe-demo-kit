@@ -4,7 +4,7 @@ Build a running demo first, then add depth. `pnpm trace` enforces every scenario
 
 Mark a milestone done by changing `[ ]` to `[x]` once `pnpm verify` is green and the human has approved it.
 
-## [ ] M1: Running demo (walking skeleton)
+## [x] M1: Running demo (walking skeleton)
 Goal: open the host, pick any of the 4 geographies, and see a simple form whose layout Claude composed live. Submit it to the mocks. The lite version loads for IN.
 
 - Flags: FLG-001, FLG-002, FLG-003, FLG-005, FLG-006
