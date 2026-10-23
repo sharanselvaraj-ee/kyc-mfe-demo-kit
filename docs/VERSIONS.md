@@ -84,5 +84,11 @@ No global `pnpm`/`corepack` is installed or assumed. All commands in this repo r
 - **`webServer` plugins run sequentially, not concurrently** (confirmed by reading `WebServerPlugin.setup()`: each plugin fully starts-and-waits before the next one's `setup()` even begins) — budget webServer timeouts as additive across entries, not the max of them.
 - **pnpm added as a real devDependency (`node_modules/.bin/pnpm`), not just invoked via `npx pnpm@12.14.0`.** Concurrent `npx` invocations (e.g. Playwright starting two webServers) appear to race on npx's own install/cache lock; a real local binary removes that per-call resolution entirely. `.envrc`'s `OPENSPEC` var and the `help/openspec_cheatsheet.md` commands are unaffected (still `npx`-based, since `@fission-ai/openspec` isn't a workspace dependency).
 
+## CI (2026-10-23)
+
+- **`.github/workflows/ci.yml` runs `pnpm verify` on every push to `main` and every PR.** No `ANTHROPIC_API_KEY` secret configured or needed — e2e runs in `KYC_AGENT_MODE=recorded`. Verified green end to end on the first real push (run `40036804210`, ~50s).
+- **Pinned action versions, checked against each action's own GitHub releases on 2026-10-23** (not assumed from training data, per CLAUDE.md §8): `actions/checkout@v7`, `actions/setup-node@v7`, `pnpm/action-setup@v6`, `actions/upload-artifact@v7`. The first run under `@v4` pins worked but logged a deprecation notice ("targets Node.js 20, forced to run on Node.js 24"); bumped to the current majors to clear it.
+- **Pinned to major-version tags (`@v7`), not exact commit SHAs.** The hardened/supply-chain-conscious approach pins third-party Actions to a commit SHA; left as major-tag for this demo repo's simplicity — worth revisiting for a real production pipeline.
+
 ## Open questions (also logged in `docs/OPEN-QUESTIONS.md`)
 - None outstanding from Checkpoint 0 as of 2026-10-22 — the ">500 characters" warnings are resolved (see OpenSpec section above).
