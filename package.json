@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "concurrently -n agent,host -c magenta,cyan \"pnpm --filter @kyc/agent dev\" \"pnpm --filter @kyc/host dev\"",
     "agent:check": "pnpm --filter @kyc/agent check",
+    "agent:record": "pnpm --filter @kyc/agent record",
     "ir:build": "pnpm --filter @kyc/ir build"
   },
   "devDependencies": {

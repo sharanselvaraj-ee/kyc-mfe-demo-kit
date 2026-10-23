@@ -1,0 +1,6 @@
+{"version":"v0.9","createSurface":{"surfaceId":"GB-step-0","catalogId":"kyc-catalog-v1"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"GB-step-0","components":[{"id":"heading","component":"Heading","text":"Personal details"},{"id":"name","component":"TextField","fieldId":"name","label":"Full name"},{"id":"dateOfBirth","component":"DateField","fieldId":"dateOfBirth","label":"Date of birth","hint":"You must be at least 18 to apply"}]}}
+{"version":"v0.9","createSurface":{"surfaceId":"GB-step-1","catalogId":"kyc-catalog-v1"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"GB-step-1","components":[{"id":"heading","component":"Heading","text":"Address"},{"id":"addressLine1","component":"TextField","fieldId":"addressLine1","label":"Address line 1"},{"id":"city","component":"TextField","fieldId":"city","label":"City"},{"id":"postcode","component":"TextField","fieldId":"postcode","label":"Postcode"}]}}
+{"version":"v0.9","createSurface":{"surfaceId":"GB-step-2","catalogId":"kyc-catalog-v1"}}
+{"version":"v0.9","updateComponents":{"surfaceId":"GB-step-2","components":[{"id":"heading","component":"Heading","text":"Verification"},{"id":"document","component":"FileField","fieldId":"document","label":"Identity document","hint":"Accepted: passport, driving_licence (JPG, PNG or PDF, up to 5 MB)"}]}}

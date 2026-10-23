@@ -1,6 +1,5 @@
 // SLIDE: "Headless core: logic without a framework" (geo -> fields; no geo code here, FLG-005)
-import type { CatalogComponentName } from "@kyc/contracts";
-import type { FeaturesResponse } from "@kyc/contracts";
+import type { CatalogComponentName, FeaturesResponse } from "@kyc/contracts";
 
 export interface PolicyField {
   fieldId: string;
@@ -10,13 +9,17 @@ export interface PolicyField {
 }
 
 export interface Policy {
+  /** Every field the agent may lay out across the Claude-composed steps (Personal details, Address, Verification). */
   fields: PolicyField[];
+  minAgeYears: number;
+  documentTypes: string[];
 }
 
 /**
- * Personal-details fields for the current M1 thin slice. Driven entirely by
- * flags/config, never by geo code (FLG-005) — a new geo changes the fixture,
- * not this function.
+ * Fields for the Claude-composed portion of the flow — Personal details,
+ * Address and Verification. Review & consent is shell-rendered (core decides
+ * submission, not the agent) and isn't part of this list. Driven entirely by
+ * flags/config, never by geo code (FLG-005).
  */
 export function computePolicy(features: FeaturesResponse): Policy {
   const fields: PolicyField[] = [
@@ -33,5 +36,26 @@ export function computePolicy(features: FeaturesResponse): Policy {
     fields.push({ fieldId: "nationalId", component: "TextField", label: "National ID number" });
   }
 
-  return { fields };
+  fields.push({ fieldId: "addressLine1", component: "TextField", label: "Address line 1" });
+  fields.push({ fieldId: "city", component: "TextField", label: "City" });
+  if (features.config.postcodePattern) {
+    fields.push({ fieldId: "postcode", component: "TextField", label: "Postcode" });
+  }
+
+  fields.push({
+    fieldId: "document",
+    component: "FileField",
+    label: "Identity document",
+    hint: `Accepted: ${features.config.documentTypes.join(", ")} (JPG, PNG or PDF, up to 5 MB)`,
+  });
+
+  if (features.flags["kyc.step.otp"]) {
+    fields.push({ fieldId: "otpCode", component: "TextField", label: "One-time code" });
+  }
+
+  if (features.flags["kyc.field.residency_expiry"]) {
+    fields.push({ fieldId: "residencyExpiry", component: "DateField", label: "Residency permit expiry" });
+  }
+
+  return { fields, minAgeYears: features.config.minAgeYears, documentTypes: features.config.documentTypes };
 }

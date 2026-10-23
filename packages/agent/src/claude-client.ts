@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { buildLayoutPlanSchema, type LayoutPlan } from "@kyc/contracts";
 import type { Policy } from "@kyc/core";
-import { CATALOG } from "@kyc/catalog";
+import { CATALOG, FIELD_CATALOG_NAMES } from "@kyc/catalog";
 
 export interface ClaudeLayoutResult {
   plan: LayoutPlan;
@@ -17,7 +17,7 @@ const CATALOG_DESCRIPTIONS = Object.values(CATALOG)
   .map((entry) => `- ${entry.name}: ${entry.description}`)
   .join("\n");
 
-const SYSTEM_PROMPT = `You arrange a KYC onboarding form's layout for a single screen ("Personal details").
+const SYSTEM_PROMPT = `You arrange a KYC onboarding form's layout across the "Personal details", "Address" and "Verification" screens.
 You do not decide which fields exist — that comes from the policy in the user message.
 You may only use these catalog components:
 ${CATALOG_DESCRIPTIONS}
@@ -25,7 +25,7 @@ ${CATALOG_DESCRIPTIONS}
 Rules:
 - Every item's "component" must be one of the catalog names above.
 - Every item's "fieldId" must be one of the policy's field IDs given in the request — never invent one.
-- Group items into one or more steps with short, plain titles.
+- Group the policy's fields into 2-4 steps with short, plain titles. Every field must appear exactly once.
 - Labels and hints must be plain, user-facing text (no markup).`;
 
 export async function requestLayoutPlan(
@@ -35,9 +35,8 @@ export async function requestLayoutPlan(
   geo: string,
   policy: Policy,
 ): Promise<ClaudeLayoutResult> {
-  const componentNames = Object.keys(CATALOG) as [string, ...string[]];
   const fieldIds = policy.fields.map((f) => f.fieldId) as [string, ...string[]];
-  const schema = buildLayoutPlanSchema(componentNames, fieldIds);
+  const schema = buildLayoutPlanSchema(FIELD_CATALOG_NAMES, fieldIds);
 
   const userMessage = [
     `Geo: ${geo}`,

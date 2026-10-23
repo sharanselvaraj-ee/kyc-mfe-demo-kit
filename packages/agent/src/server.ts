@@ -3,10 +3,9 @@ import { createServer } from "node:http";
 import process from "node:process";
 import Anthropic from "@anthropic-ai/sdk";
 import { GeoSchema } from "@kyc/contracts";
-import { computePolicy } from "@kyc/core";
-import { gbFeatures } from "@kyc/mocks";
-import { requestLayoutPlan } from "./claude-client.js";
-import { encodeLayoutPlanAsA2ui, toJsonl } from "./encode-a2ui.js";
+import { gbFeatures, inFeatures, aeFeatures, sgFeatures } from "@kyc/mocks";
+import { getBlueprint } from "./fallback.js";
+import { toJsonl } from "./encode-a2ui.js";
 
 try {
   process.loadEnvFile(new URL("../../../.env.local", import.meta.url));
@@ -15,10 +14,11 @@ try {
 }
 
 const PORT = Number(process.env.KYC_AGENT_PORT ?? 8787);
-const MODE = process.env.KYC_AGENT_MODE ?? "live";
+const MODE = (process.env.KYC_AGENT_MODE ?? "live") as "live" | "recorded";
 const MODEL = process.env.KYC_AGENT_MODEL ?? "claude-haiku-5-5";
 const MAX_TOKENS = Number(process.env.KYC_AGENT_MAX_TOKENS ?? 4096);
 const TIMEOUT_MS = Number(process.env.KYC_AGENT_TIMEOUT_MS ?? 10000);
+const CACHE_ENABLED = process.env.KYC_AGENT_CACHE === "on";
 
 if (MODE === "live" && !process.env.ANTHROPIC_API_KEY) {
   console.error(
@@ -33,8 +33,7 @@ const client = new Anthropic({
   maxRetries: 1,
 });
 
-// Only GB has a fixture so far — IN/AE/SG arrive in Checkpoint 2.
-const FIXTURES = { GB: gbFeatures } as const;
+const FIXTURES = { GB: gbFeatures, IN: inFeatures, AE: aeFeatures, SG: sgFeatures };
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url ?? "/", `http://localhost:${PORT}`);
@@ -52,36 +51,34 @@ const server = createServer(async (req, res) => {
     return;
   }
   const geo = geoResult.data;
-  const features = FIXTURES[geo as keyof typeof FIXTURES];
-  if (!features) {
-    res.writeHead(501, { "content-type": "application/json" }).end(
-      JSON.stringify({ error: `no fixture for geo ${geo} yet` }),
-    );
-    return;
-  }
+  const features = FIXTURES[geo];
+  const injectUnknownComponentToggle = url.searchParams.get("inject-unknown") === "1";
 
-  try {
-    const policy = computePolicy(features);
-    const result = await requestLayoutPlan(client, MODEL, MAX_TOKENS, geo, policy);
-    const messages = encodeLayoutPlanAsA2ui(result.plan, `${geo}-personal-details`);
+  const blueprint = await getBlueprint({
+    client,
+    model: MODEL,
+    maxTokens: MAX_TOKENS,
+    geo,
+    features,
+    cacheEnabled: CACHE_ENABLED,
+    injectUnknownComponentToggle,
+    mode: MODE,
+  });
 
-    res.writeHead(200, {
-      "content-type": "application/x-ndjson",
-      "x-agent-source": "live",
-      "x-agent-model": result.model,
-      "x-agent-latency-ms": String(result.latencyMs),
-      "x-agent-input-tokens": String(result.inputTokens),
-      "x-agent-output-tokens": String(result.outputTokens),
-    });
-    res.end(toJsonl(messages));
-  } catch (error) {
-    console.error("[agent] blueprint request failed:", error);
-    res.writeHead(502, { "content-type": "application/json" }).end(
-      JSON.stringify({ error: "live Claude call failed", detail: String(error) }),
-    );
-  }
+  const headers: Record<string, string> = {
+    "content-type": "application/x-ndjson",
+    "x-agent-source": blueprint.source,
+  };
+  if (blueprint.model) headers["x-agent-model"] = blueprint.model;
+  if (blueprint.latencyMs !== undefined) headers["x-agent-latency-ms"] = String(blueprint.latencyMs);
+  if (blueprint.inputTokens !== undefined) headers["x-agent-input-tokens"] = String(blueprint.inputTokens);
+  if (blueprint.outputTokens !== undefined) headers["x-agent-output-tokens"] = String(blueprint.outputTokens);
+  if (blueprint.fallbackReason) headers["x-agent-fallback-reason"] = blueprint.fallbackReason;
+
+  res.writeHead(200, headers);
+  res.end(toJsonl(blueprint.messages));
 });
 
 server.listen(PORT, () => {
-  console.log(`[agent] listening on :${PORT} (mode=${MODE}, model=${MODEL})`);
+  console.log(`[agent] listening on :${PORT} (mode=${MODE}, model=${MODEL}, cache=${CACHE_ENABLED})`);
 });
