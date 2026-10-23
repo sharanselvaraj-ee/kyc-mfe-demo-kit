@@ -7,7 +7,7 @@ const ROOT = fileURLToPath(new URL("../..", import.meta.url));
 export default defineConfig({
   testDir: ".",
   fullyParallel: true,
-  reporter: "list",
+  reporter: process.env.CI ? [["list"], ["html", { outputFolder: "playwright-report", open: "never" }]] : "list",
   use: {
     baseURL: "http://localhost:5173",
   },

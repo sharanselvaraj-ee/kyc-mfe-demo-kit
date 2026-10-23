@@ -1,0 +1,57 @@
+# SLIDE: "The harness is the real guarantee" (pnpm verify, run on every push and PR)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: pnpm verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.14.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # Tests never call Claude (CLAUDE.md §3) — KYC_AGENT_MODE=recorded in
+      # tests/e2e/playwright.config.ts means no ANTHROPIC_API_KEY is needed here.
+      - run: pnpm install --frozen-lockfile
+
+      - name: IR-001 — Mitosis output matches what's committed
+        run: |
+          pnpm ir:build
+          git diff --exit-code -- packages/gen || {
+            echo "::error::packages/gen is out of date. Run 'pnpm ir:build' locally and commit the result.";
+            exit 1;
+          }
+
+      - name: Install Playwright's browser
+        run: pnpm --filter @kyc/tests exec playwright install --with-deps chromium
+
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm trace
+      - run: pnpm size
+      - run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: tests/playwright-report/
+          retention-days: 7
