@@ -22,7 +22,7 @@ pnpm workspace, TypeScript strict.
 | `packages/ir` | Mitosis `.lite.tsx` **generic primitives**: `Heading`, `Notice`, `TextField`, `DateField`, `SelectField`, `FileField`, `CheckboxField`. Presentational: props in, events out. Written by the agent from the spec | — |
 | `packages/gen/react`, `packages/gen/svelte` | Mitosis output. **Generated, committed, never hand-edited** | — |
 | `packages/catalog` | Allowlist: primitive name → generated React component + Zod prop schema + one-line description (the description is also what Claude sees) | gen/react, contracts |
-| `packages/agent` | **Server-side Node service.** Calls Claude, validates the plan, encodes A2UI v0.9 JSONL, streams it. Owns the fallback chain and the recordings | contracts, core, catalog (schemas only) |
+| `packages/agent` | **Server-side Node service.** Calls Claude, validates the plan, encodes A2UI v0.9 JSONL, streams it. Owns the fallback chain and the recordings | contracts, core, catalog (schemas only), mocks (fixture data only — there is no real `/features` HTTP endpoint for a server process to call; see decision log in `docs/VERSIONS.md`) |
 | `packages/mfe-full` | React shell + A2UI renderer → `<kyc-onboarding>` | core, catalog, contracts |
 | `packages/mfe-lite` | Svelte 5 shell → `<kyc-onboarding-lite>`, with the blueprint baked at build time | core, gen/svelte, contracts |
 | `packages/loader` | Tiny script: picks full vs lite, injects the bundle | build-time manifest only |

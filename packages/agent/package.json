@@ -1,0 +1,22 @@
+{
+  "name": "@kyc/agent",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "check": "tsx src/check.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "1.1.0",
+    "@kyc/catalog": "workspace:*",
+    "@kyc/contracts": "workspace:*",
+    "@kyc/core": "workspace:*",
+    "@kyc/mocks": "workspace:*",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

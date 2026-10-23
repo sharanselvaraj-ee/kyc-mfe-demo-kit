@@ -1,0 +1,10 @@
+{
+  "name": "@kyc/gen-svelte",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "dependencies": {
+    "svelte": "5.57.2"
+  }
+}

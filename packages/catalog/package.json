@@ -1,0 +1,17 @@
+{
+  "name": "@kyc/catalog",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@kyc/contracts": "workspace:*",
+    "@kyc/gen-react": "workspace:*",
+    "react": "19.3.1",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0"
+  }
+}

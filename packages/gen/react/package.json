@@ -1,0 +1,11 @@
+{
+  "name": "@kyc/gen-react",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "dependencies": {
+    "react": "19.3.1"
+  }
+}

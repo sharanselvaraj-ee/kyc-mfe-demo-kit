@@ -1,0 +1,12 @@
+{
+  "name": "@kyc/ir",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "mitosis build && node scripts/prepend-headers.mjs"
+  },
+  "devDependencies": {
+    "@builder.io/mitosis": "0.14.1",
+    "@builder.io/mitosis-cli": "0.14.1"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "kyc-mfe-demo-kit",
+  "private": true,
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -n agent,host -c magenta,cyan \"pnpm --filter @kyc/agent dev\" \"pnpm --filter @kyc/host dev\"",
+    "agent:check": "pnpm --filter @kyc/agent check",
+    "ir:build": "pnpm --filter @kyc/ir build"
+  },
+  "devDependencies": {
+    "concurrently": "10.0.6",
+    "typescript": "7.0.2"
+  }
+}
