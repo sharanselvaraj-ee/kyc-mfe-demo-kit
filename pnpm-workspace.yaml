@@ -2,7 +2,9 @@ packages:
   - "packages/*"
   - "packages/gen/*"
   - "apps/*"
+  - "tests"
 
 allowBuilds:
   esbuild: true
+  pnpm: true
   svelte-preprocess: true

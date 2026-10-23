@@ -7,12 +7,14 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@kyc/mfe-full": "workspace:*",
+    "@kyc/loader": "workspace:*",
     "@kyc/mocks": "workspace:*",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "svelte": "5.57.2"
   },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@vitejs/plugin-react": "6.1.2",
     "msw": "3.0.3",
     "vite": "8.3.5"

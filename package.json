@@ -9,10 +9,16 @@
     "dev": "concurrently -n agent,host -c magenta,cyan \"pnpm --filter @kyc/agent dev\" \"pnpm --filter @kyc/host dev\"",
     "agent:check": "pnpm --filter @kyc/agent check",
     "agent:record": "pnpm --filter @kyc/agent record",
-    "ir:build": "pnpm --filter @kyc/ir build"
+    "lite:bake": "pnpm --filter @kyc/mfe-lite bake",
+    "loader:manifest": "pnpm --filter @kyc/loader generate-manifest",
+    "ir:build": "pnpm --filter @kyc/ir build",
+    "test": "pnpm --filter @kyc/tests test",
+    "test:e2e": "pnpm --filter @kyc/tests test:e2e",
+    "trace": "pnpm --filter @kyc/tests trace"
   },
   "devDependencies": {
     "concurrently": "10.0.6",
+    "pnpm": "12.14.0",
     "typescript": "7.0.2"
   }
 }

@@ -1,5 +1,6 @@
 // SLIDE: "Headless core: logic without a framework" (geo -> fields; no geo code here, FLG-005)
 import type { CatalogComponentName, FeaturesResponse } from "@kyc/contracts";
+import { isNationalIdRequired, isOtpRequired, isResidencyExpiryRequired } from "./flags.js";
 
 export interface PolicyField {
   fieldId: string;
@@ -32,7 +33,7 @@ export function computePolicy(features: FeaturesResponse): Policy {
     },
   ];
 
-  if (features.flags["kyc.field.national_id"]) {
+  if (isNationalIdRequired(features)) {
     fields.push({ fieldId: "nationalId", component: "TextField", label: "National ID number" });
   }
 
@@ -49,11 +50,11 @@ export function computePolicy(features: FeaturesResponse): Policy {
     hint: `Accepted: ${features.config.documentTypes.join(", ")} (JPG, PNG or PDF, up to 5 MB)`,
   });
 
-  if (features.flags["kyc.step.otp"]) {
+  if (isOtpRequired(features)) {
     fields.push({ fieldId: "otpCode", component: "TextField", label: "One-time code" });
   }
 
-  if (features.flags["kyc.field.residency_expiry"]) {
+  if (isResidencyExpiryRequired(features)) {
     fields.push({ fieldId: "residencyExpiry", component: "DateField", label: "Residency permit expiry" });
   }
 

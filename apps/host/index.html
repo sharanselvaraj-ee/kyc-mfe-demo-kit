@@ -39,6 +39,10 @@
           <input type="checkbox" id="inject-unknown" />
           Inject unknown component (RT-002)
         </label>
+        <label>
+          <input type="checkbox" id="slow-network" />
+          Simulate slow network (LITE-001 — only IN has lite)
+        </label>
         <h2>Last agent response</h2>
         <dl id="agent-headers">
           <dt>source</dt>
@@ -48,6 +52,14 @@
         <ul id="event-log"></ul>
       </aside>
     </div>
+    <script>
+      // Reflects ?kyc-lite=1 into the dev panel's checkbox before main.ts (and the loader) run.
+      if (new URLSearchParams(window.location.search).has("kyc-lite")) {
+        document.getElementById("slow-network").checked = true;
+        document.getElementById("geo-select").value = "IN";
+        document.getElementById("kyc").setAttribute("geo", "IN");
+      }
+    </script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { MessageProcessor } from "@a2ui/web_core";
 import type { Geo } from "@kyc/contracts";
 import { fetchFeatures, computePolicy, initialMachineState, tryAdvance, goBack, type Values } from "@kyc/core";
-import { requestOtp, fetchPrefill, uploadDocument, submitKyc } from "@kyc/core";
+import { requestOtp, fetchPrefill, uploadDocument, submitKyc, isGovPrefillAvailable } from "@kyc/core";
 import { a2uiCatalog } from "./catalog.js";
 import { fetchBlueprint } from "./blueprint.js";
 import { FieldRenderer, type RenderedComponent } from "./FieldRenderer.js";
@@ -149,7 +149,7 @@ export function KycOnboardingForm({ geo, apiBase, injectUnknownComponent, onEven
   if (phase === "submitted") return <p role="status">Submitted — thank you.</p>;
 
   const fieldIdsHere = currentStep?.components.map((c) => (c.properties.fieldId as string) ?? c.id) ?? [];
-  const showPrefill = features.flags["kyc.prefill.gov"] && fieldIdsHere.includes("name");
+  const showPrefill = isGovPrefillAvailable(features) && fieldIdsHere.includes("name");
   const showOtpSend = fieldIdsHere.includes("otpCode");
 
   return (

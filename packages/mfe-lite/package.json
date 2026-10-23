@@ -1,0 +1,24 @@
+{
+  "name": "@kyc/mfe-lite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "bake": "tsx scripts/bake.ts"
+  },
+  "dependencies": {
+    "@a2ui/web_core": "0.14.0",
+    "@kyc/contracts": "workspace:*",
+    "@kyc/core": "workspace:*",
+    "@kyc/gen-svelte": "workspace:*",
+    "svelte": "5.57.2",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "1.1.0",
+    "@kyc/agent": "workspace:*",
+    "@kyc/mocks": "workspace:*",
+    "tsx": "4.23.15"
+  }
+}

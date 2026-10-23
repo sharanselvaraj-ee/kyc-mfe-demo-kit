@@ -1,0 +1,19 @@
+{
+  "name": "@kyc/loader",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "generate-manifest": "tsx scripts/generate-manifest.mjs"
+  },
+  "dependencies": {
+    "@kyc/mfe-full": "workspace:*",
+    "@kyc/mfe-lite": "workspace:*"
+  },
+  "devDependencies": {
+    "@kyc/mocks": "workspace:*",
+    "tsx": "4.23.15"
+  }
+}
