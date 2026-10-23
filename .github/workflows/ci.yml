@@ -42,11 +42,19 @@ jobs:
       - name: Install Playwright's browser
         run: pnpm --filter @kyc/tests exec playwright install --with-deps chromium
 
+      # Each check runs even if an earlier one failed, so a PR shows every
+      # failing check at once instead of stopping at the first (the combined
+      # `pnpm verify` script short-circuits on `&&`; this doesn't).
       - run: pnpm lint
+        if: ${{ !cancelled() }}
       - run: pnpm test
+        if: ${{ !cancelled() }}
       - run: pnpm trace
+        if: ${{ !cancelled() }}
       - run: pnpm size
+        if: ${{ !cancelled() }}
       - run: pnpm test:e2e
+        if: ${{ !cancelled() }}
 
       - name: Upload Playwright report
         if: failure()
